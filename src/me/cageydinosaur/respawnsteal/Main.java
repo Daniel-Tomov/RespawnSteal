@@ -2,7 +2,10 @@ package me.cageydinosaur.respawnsteal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,46 +15,44 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 public class Main extends JavaPlugin {
-
-	public ArrayList<Respawns> respawnsLeft = new ArrayList<Respawns>();
 
 	private File customConfigFile;
 	private FileConfiguration customConfig;
-	
+
+	public ArrayList<Respawns> respawnList = new ArrayList<Respawns>();
+
 	public void onEnable() {
-
-
-		getCommand("respawnsteal").setExecutor(new Commands(this));
+		getCommand("respawnsteal").setExecutor(new Cmd(this));
 		getCommand("respawnsteal").setTabCompleter(new TabCompletion(this));
-		this.saveDefaultConfig();
-		this.createCustomConfig();
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
+		
+		this.saveDefaultConfig();
+		
+		this.createCustomConfig();
+		this.addRespawnsToList();
+
 	}
 
 	public void onDisable() {
-		addRespawnsToConfig();
-		
+		this.addRespawnsToConfig();
 	}
-	
+
+	public String chat(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+
 	public void addRespawnsToConfig() {
 		ArrayList<String> list = new ArrayList<String>();
 		// String[] list = null;
 		list.clear();
-		this.getCustomConfig().set("respawns", "");
+		this.customConfig.set("respawns", "");
 		this.saveCustomConfig();
-		for (Respawns r : this.respawnsLeft) {
-			/*
-			Friends f = this.friendsList.get(i);
-			Player friender = f.getFriender();
-			Player friended = f.getFriended();
-			list.add(friender.getDisplayName() + ", " + friended.getDisplayName());
-			*/
-			if (this.respawnsLeft.size() > 0) {
-			Player playerName = r.getPlayerName();
-			int points = r.getPlayerRespawns();
-			list.add(playerName.getDisplayName() + ", " + Integer.toString(points));
+		for (Respawns r : this.respawnList) {
+			if (this.respawnList.size() > 0) {
+				Player playerName = r.getPlayerName();
+				int points = r.getPlayerRespawns();
+				list.add(playerName.getDisplayName() + ", " + Integer.toString(points));
 			}
 		}
 		this.getCustomConfig().set("respawns", list);
@@ -60,15 +61,22 @@ public class Main extends JavaPlugin {
 
 	@SuppressWarnings("deprecation")
 	public void addRespawnsToList() {
-		for (String i : this.getCustomConfig().getStringList("respawns")) {
+		this.respawnList.clear();
+		for (String i : this.customConfig.getStringList("respawns")) {
 			String[] split = i.split(", ", 2);
 			Bukkit.broadcastMessage(split[0]);
 			Bukkit.broadcastMessage(split[1]);
 			Player playerName = Bukkit.getPlayer(split[0]);
 			int amtOfRespawns = Integer.parseInt(split[1]);
-			this.respawnsLeft.add(new Respawns(playerName, amtOfRespawns));
+			this.respawnList.add(new Respawns(playerName, amtOfRespawns));
 		}
 	}
+
+	public void clearConfig() {
+		this.getCustomConfig().set("respawns", "");
+		this.saveCustomConfig();
+	}
+
 
 	public FileConfiguration getCustomConfig() {
 		return this.customConfig;
@@ -96,13 +104,5 @@ public class Main extends JavaPlugin {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public String chat(String s) {
-		return ChatColor.translateAlternateColorCodes('&', s);
-	}
-
-	public void reloadTheConfig() {
-		this.reloadConfig();
 	}
 }

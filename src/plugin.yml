@@ -3,6 +3,6 @@ version: 1.0
 main: me.cageydinosaur.respawnsteal.Main
 api-version: 1.17
 commands:
-  heart:
+  respawnsteal:
     usage: /respawnsteal
     description: Command for seeing other commands for plugin

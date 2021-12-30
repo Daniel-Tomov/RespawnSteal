@@ -18,7 +18,6 @@ public class TabCompletion implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		List<String> commands = new ArrayList<>();
-		commands.add(" ");
 		if (args.length == 1) {
 			if (sender.hasPermission("respawnsteal")) {
 				if (sender.hasPermission("respawnsteal.add")) {
@@ -30,7 +29,7 @@ public class TabCompletion implements TabCompleter {
 				return commands;
 			}
 		}
-		return commands;
+		return null;
 	}
 
 }

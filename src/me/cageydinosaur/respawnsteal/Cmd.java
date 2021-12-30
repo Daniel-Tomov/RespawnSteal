@@ -1,16 +1,18 @@
 package me.cageydinosaur.respawnsteal;
 
 import org.bukkit.Bukkit;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Commands implements CommandExecutor {
-	Main plugin;
 
-	public Commands(Main plugin) {
+public class Cmd implements CommandExecutor {
+
+	Main plugin;
+	public Cmd(Main plugin) {
 		this.plugin = plugin;
 	}
 
@@ -27,7 +29,6 @@ public class Commands implements CommandExecutor {
 				if (sender.hasPermission("respawnsteal.take"))
 					sender.sendMessage(ChatColor.GREEN + "/respawnsteal take <player> - takes one respawn from player");
 				if (!(sender.hasPermission("respawnsteal.take")) && !(sender.hasPermission("respawnsteal.add"))) {
-
 				}
 				return true;
 			} else if (args.length > 0) {
@@ -38,6 +39,16 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					plugin.reloadConfig();
+					sender.sendMessage("Reloaded the config");
+					return true;
+
+				}else if (args[0].equalsIgnoreCase("reloadrespawns")) {
+					if (!sender.hasPermission("respawnsteal.reloadrespawns")) {
+						sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
+						return true;
+					}
+					plugin.addRespawnsToList();
+					
 					sender.sendMessage("Reloaded the config");
 					return true;
 
@@ -55,9 +66,14 @@ public class Commands implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + "That player is not online");
 							return true;
 						}
-						Respawns respawn = Respawns.getRespawns(plugin.respawnsLeft, recievingPlayer);
-						sender.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + " now has " + ChatColor.RED
-								+ respawn.getPlayerRespawns() + ChatColor.GREEN + " respawns");
+						Respawns respawn = Respawns.getInfo(plugin.respawnList, recievingPlayer);
+						
+						int respawnAmt = respawn.getPlayerRespawns() + 1;
+						plugin.respawnList.remove(respawn);
+						plugin.respawnList.add(new Respawns(recievingPlayer, respawnAmt));
+						
+						sender.sendMessage(ChatColor.RED + respawn.getPlayerName().getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
+								+ respawnAmt + ChatColor.GREEN + " respawns");
 
 						return true;
 					}
@@ -76,14 +92,15 @@ public class Commands implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + "That player is not online");
 							return true;
 						}
-						Respawns respawn = Respawns.getRespawns(plugin.respawnsLeft, recievingPlayer);
-						int NumberOfRespawns = respawn.getPlayerRespawns();
-						plugin.respawnsLeft.remove(respawn);
-						sender.sendMessage(ChatColor.RED + args[0] + ChatColor.GREEN + " now has " + ChatColor.RED
-								+ respawn.getPlayerRespawns() + ChatColor.GREEN + " respawns");
+						Respawns respawn = Respawns.getInfo(plugin.respawnList, recievingPlayer);
 						
-						plugin.respawnsLeft.add(new Respawns(recievingPlayer, NumberOfRespawns));
+						int respawnAmt = respawn.getPlayerRespawns() - 1;
+						plugin.respawnList.remove(respawn);
+						plugin.respawnList.add(new Respawns(recievingPlayer, respawnAmt));
 						
+						sender.sendMessage(ChatColor.RED + respawn.getPlayerName().getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
+								+ respawnAmt + ChatColor.GREEN + " respawns");
+
 						return true;
 					}
 
@@ -91,6 +108,6 @@ public class Commands implements CommandExecutor {
 			}
 			return true;
 		}
-		return true;
+		return false;
 	}
 }
