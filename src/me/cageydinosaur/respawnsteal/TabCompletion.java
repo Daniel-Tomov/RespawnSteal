@@ -26,6 +26,13 @@ public class TabCompletion implements TabCompleter {
 				if (sender.hasPermission("respawnsteal.take")) {
 					commands.add("take");
 				}
+				if (sender.hasPermission("respawnsteal.reload")) {
+					commands.add("reload");
+				}
+				if (sender.hasPermission("respawnsteal.testing")) {
+					commands.add("rc");
+					commands.add("rr");
+				}
 				return commands;
 			}
 		}

@@ -20,47 +20,49 @@ public class Events implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player joiner = e.getPlayer();
-		e.setJoinMessage("hey");
-		Respawns respawns = Respawns.getInfo(plugin.respawnList, joiner);
-		if (Respawns.ifRespawns(plugin.respawnList, joiner)) {
-			plugin.respawnList.add(new Respawns(joiner, 3));
-			Bukkit.broadcastMessage("added");
-		} else
-			Bukkit.broadcastMessage("not");
+		if (!(plugin.ifRespawns(joiner))) {
+			plugin.addInfo(joiner, 3);
+			joiner.sendMessage(ChatColor.GREEN + "You have " + ChatColor.RED + "3" + ChatColor.GREEN
+					+ " respawns. If you die you will " + ChatColor.RED + "lose one" + ChatColor.GREEN + " respawn. If you "
+					+ ChatColor.RED + "kill" + ChatColor.GREEN + " other players, you will " + ChatColor.RED + "gain one"
+					+ ChatColor.GREEN + " respawn. Once you lose all of your respawns, you will be put into "
+					+ ChatColor.RED + "Spectator Mode" + ChatColor.GREEN + ". Have fun playing!");
+		} else {
+			int respawnAmt = plugin.getPlayerRespawns(joiner);
+			joiner.sendMessage(ChatColor.GREEN + "Just a reminder, you have " + ChatColor.RED + respawnAmt
+					+ ChatColor.GREEN + " respawns.");
+		}
 	}
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent e) {
 		Player recievingPlayer = e.getEntity();
-		recievingPlayer.sendMessage("yee");
+
+		if (!(plugin.ifRespawns(recievingPlayer))) {
+			plugin.addInfo(recievingPlayer, 3);
+		}
 		if (e.getEntity().getKiller() instanceof Player) {
 			Player killer = e.getEntity().getKiller();
-			Respawns respawn = Respawns.getInfo(plugin.respawnList, killer);
-
-			int respawnAmt = respawn.getPlayerRespawns() + 1;
-			plugin.respawnList.remove(respawn);
-			plugin.respawnList.add(new Respawns(killer, respawnAmt));
+			int respawnAmt = plugin.getPlayerRespawns(killer) + 1;
+			plugin.removeInfo(recievingPlayer);
+			plugin.addInfo(recievingPlayer, respawnAmt);
 
 			killer.sendMessage(ChatColor.GREEN + "You have killed " + ChatColor.RED + recievingPlayer.getDisplayName()
 					+ ChatColor.GREEN + " and have received one respawn. Your total is " + ChatColor.RED + respawnAmt
 					+ ChatColor.GREEN + " respawns");
 		}
 
-		Respawns respawn = Respawns.getInfo(plugin.respawnList, recievingPlayer);
-		if (respawn == null) {
-			plugin.respawnList.add(new Respawns(recievingPlayer, 3));
-			Bukkit.broadcastMessage("2");
-		}
-		if (respawn.getPlayerRespawns() == 0) {
+		int respawnAmt = plugin.getPlayerRespawns(recievingPlayer);
+		if (respawnAmt == 0) {
 			recievingPlayer.sendMessage(ChatColor.RED + "You are out of respawns.");
 			recievingPlayer.setGameMode(GameMode.SPECTATOR);
 		} else {
-			int respawnAmt = respawn.getPlayerRespawns() - 1;
-			plugin.respawnList.remove(respawn);
-			plugin.respawnList.add(new Respawns(recievingPlayer, respawnAmt));
+			respawnAmt = respawnAmt - 1;
+			plugin.removeInfo(recievingPlayer);
+			plugin.addInfo(recievingPlayer, respawnAmt);
 
-			recievingPlayer.sendMessage(
-					ChatColor.GREEN + "You now have " + ChatColor.RED + respawnAmt + ChatColor.GREEN + " respawns");
+			recievingPlayer.sendMessage(ChatColor.GREEN + "You have died" + ChatColor.GREEN + " and now have "
+					+ ChatColor.RED + respawnAmt + ChatColor.GREEN + " respawns");
 
 		}
 	}

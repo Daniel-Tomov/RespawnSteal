@@ -8,10 +8,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-
 public class Cmd implements CommandExecutor {
 
 	Main plugin;
+
 	public Cmd(Main plugin) {
 		this.plugin = plugin;
 	}
@@ -42,14 +42,23 @@ public class Cmd implements CommandExecutor {
 					sender.sendMessage("Reloaded the config");
 					return true;
 
-				}else if (args[0].equalsIgnoreCase("reloadrespawns")) {
+				}else if (args[0].equalsIgnoreCase("rr")) {
 					if (!sender.hasPermission("respawnsteal.reloadrespawns")) {
 						sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
 						return true;
 					}
 					plugin.addRespawnsToList();
 					
-					sender.sendMessage("Reloaded the config");
+					sender.sendMessage("Added respawns to list");
+					return true;
+
+				} else if (args[0].equalsIgnoreCase("rc")) {
+					if (!sender.hasPermission("respawnsteal.reloadrespawnsconfig")) {
+						sender.sendMessage(ChatColor.RED + "You do not have permission to use that!");
+						return true;
+					}
+					plugin.addRespawnsToConfig();					
+					sender.sendMessage("Added respawns to config");
 					return true;
 
 				} else if (args[0].equalsIgnoreCase("add")) {
@@ -66,13 +75,12 @@ public class Cmd implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + "That player is not online");
 							return true;
 						}
-						Respawns respawn = Respawns.getInfo(plugin.respawnList, recievingPlayer);
 						
-						int respawnAmt = respawn.getPlayerRespawns() + 1;
-						plugin.respawnList.remove(respawn);
-						plugin.respawnList.add(new Respawns(recievingPlayer, respawnAmt));
+						int respawnAmt = plugin.getPlayerRespawns(recievingPlayer) + 1;
+						plugin.removeInfo(recievingPlayer);
+						plugin.addInfo(recievingPlayer, respawnAmt);
 						
-						sender.sendMessage(ChatColor.RED + respawn.getPlayerName().getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
+						sender.sendMessage(ChatColor.RED + recievingPlayer.getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
 								+ respawnAmt + ChatColor.GREEN + " respawns");
 
 						return true;
@@ -92,13 +100,12 @@ public class Cmd implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + "That player is not online");
 							return true;
 						}
-						Respawns respawn = Respawns.getInfo(plugin.respawnList, recievingPlayer);
 						
-						int respawnAmt = respawn.getPlayerRespawns() - 1;
-						plugin.respawnList.remove(respawn);
-						plugin.respawnList.add(new Respawns(recievingPlayer, respawnAmt));
+						int respawnAmt = plugin.getPlayerRespawns(recievingPlayer) - 1;
+						plugin.removeInfo(recievingPlayer);
+						plugin.addInfo(recievingPlayer, respawnAmt);
 						
-						sender.sendMessage(ChatColor.RED + respawn.getPlayerName().getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
+						sender.sendMessage(ChatColor.RED + recievingPlayer.getDisplayName() + ChatColor.GREEN + " now has " + ChatColor.RED
 								+ respawnAmt + ChatColor.GREEN + " respawns");
 
 						return true;
