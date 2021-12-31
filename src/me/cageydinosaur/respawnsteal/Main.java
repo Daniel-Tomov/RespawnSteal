@@ -51,17 +51,13 @@ public class Main extends JavaPlugin {
 
 	public void addInfo(Player player, int respawnsL) {
 		this.respawnList.add(player.getDisplayName() + ", " + Integer.toString(respawnsL));
-		player.sendMessage("done");
 	}
 
 	public void removeInfo(Player player) {
 		for (String i : respawnList) {
 			String[] split = i.split(", ", 2);
 			if (split[0].equals(player.getDisplayName())) {
-				Bukkit.getLogger().severe(i);
-				Bukkit.getLogger().severe(Integer.toString(respawnList.indexOf(split[0] + ", " + split[1])));
-				if (respawnList.remove(split[0] + ", " + split[1])) Bukkit.getLogger().severe("yes");
-				Bukkit.getLogger().severe("removed");
+				respawnList.remove(split[0] + ", " + split[1]);
 				return;
 			}
 		}
@@ -101,18 +97,9 @@ public class Main extends JavaPlugin {
 		this.saveCustomConfig();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addRespawnsToList() {
 		this.respawnList.clear();
 		for (String i : this.customConfig.getStringList("respawns")) {
-			String[] split = i.split(", ", 2);
-			OfflinePlayer playerName = Bukkit.getOfflinePlayer(split[0]);
-			int amtOfRespawns = Integer.parseInt(split[1]);
-
-			this.getLogger().severe(playerName.getName());
-			this.getLogger().severe(split[0]);
-			this.getLogger().severe(Integer.toString(amtOfRespawns));
-
 			this.respawnList.add(i);
 
 		}

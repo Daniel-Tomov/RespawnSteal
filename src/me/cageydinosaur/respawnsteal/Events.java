@@ -44,8 +44,8 @@ public class Events implements Listener {
 		if (e.getEntity().getKiller() instanceof Player) {
 			Player killer = e.getEntity().getKiller();
 			int respawnAmt = plugin.getPlayerRespawns(killer) + 1;
-			plugin.removeInfo(recievingPlayer);
-			plugin.addInfo(recievingPlayer, respawnAmt);
+			plugin.removeInfo(killer);
+			plugin.addInfo(killer, respawnAmt);
 
 			killer.sendMessage(ChatColor.GREEN + "You have killed " + ChatColor.RED + recievingPlayer.getDisplayName()
 					+ ChatColor.GREEN + " and have received one respawn. Your total is " + ChatColor.RED + respawnAmt
