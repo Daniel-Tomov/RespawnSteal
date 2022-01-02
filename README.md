@@ -1,6 +1,8 @@
 # RespawnSteal
 Made based off a plugin request on the Bukkit Forums https://bukkit.org/threads/respawn-steal.494735/
 
+Made for Minecraft version 1.17. Not tested with other versions
+
 # Commands
 /respawnsteal add <player name> - adds a respawn to a player
 
