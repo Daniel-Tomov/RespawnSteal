@@ -1,4 +1,4 @@
-# LifeSteal
+# RespawnSteal
 Made based off a plugin request on the Bukkit Forums https://bukkit.org/threads/respawn-steal.494735/
 
 # Commands
