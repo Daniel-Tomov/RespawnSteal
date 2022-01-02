@@ -1,27 +1,28 @@
-# RespawnSteal
-Made based off a plugin request on the Bukkit Forums https://bukkit.org/threads/lifesteal-plugin-skript.494790/
+# LifeSteal
+Made based off a plugin request on the Bukkit Forums https://bukkit.org/threads/respawn-steal.494735/
 
 # Commands
-/lifesteal add <player name> - adds a respawn to a player
+/respawnsteal add <player name> - adds a respawn to a player
 
-/lifesteal remove <player name> - takes a respawn from a player
+/respawnsteal take <player name> - takes a respawn from a player
 
-/lifesteal reload - reloads config. Does not reload the crafting recipe. A full server restart is needed for that.
+/respawnsteal reload - reloads config. Currently does nothing
 
 Others commands:
 
-/lifesteal lc - puts heart amount for every player into lives.yml
+/respawnsteal rc - puts respawns into respawns.yml
 
-/lifesteal rl - takes player hearts from lives.yml and puts them into list. Be careful with this one as it can remove hearts for players that are online and that bugs the plugin.
+
+/respawnsteal rr - takes respawns from respawns.yml and puts them into list. Be careful with this one as it can remove respawns for players that are online and that bugs the plugin.
 
 # Permissions
 
-lifesteal.add - /respawnsteal add
+respawnsteal.add - /respawnsteal add
 
-lifesteal.remove - /respawnsteal remove
+respawnsteal.take - /respawnsteal take
 
-lifesteal.reload - /respawnsteal reload
+respawnsteal.reload - /respawnsteal reload
 
-lifesteal.reloadlives - /lifesteal rl
+respawnsteal.reloadrespawns - /respawnsteal rr
 
-lifesteal.reloadlifeconfig - /lifesteal lc
+respawnsteal.reloadrespawnsconfig - /respawnsteal rc
