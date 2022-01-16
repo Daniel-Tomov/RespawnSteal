@@ -30,8 +30,8 @@ public class TabCompletion implements TabCompleter {
 					commands.add("reload");
 				}
 				if (sender.hasPermission("respawnsteal.testing")) {
-					commands.add("rc");
-					commands.add("rr");
+					commands.add("rl");
+					commands.add("lc");
 				}
 				return commands;
 			}
